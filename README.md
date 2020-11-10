@@ -1,5 +1,5 @@
 ﻿# Reddit-Clone
-A <a href="https://www.reddit.com/">Reddit</a> clone web application.
+A <a href="https://www.reddit.com/" target="_blank">Reddit</a> clone web application.
 
 A full stack app, written in TypeScript, implemented with:
 * React
