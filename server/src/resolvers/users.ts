@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import { MyContext } from "src/types";
+import { generateJwtToken } from "src/utils/auth";
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from "type-graphql";
 import { User } from "../entities/User";
 
@@ -27,6 +28,9 @@ class UserResponse {
 
     @Field(() => User, { nullable: true })
     user?: User;
+
+    @Field(() => String, { nullable: true })
+    token?: string;
 }
 
 @Resolver()
@@ -75,7 +79,8 @@ export class UserResolver {
             }
         }
         return {
-            user
+            user,
+            token: generateJwtToken(user),
         };
     }
 
@@ -108,7 +113,8 @@ export class UserResolver {
             }
         }
         return {
-            user
+            user,
+            token: generateJwtToken(user),
         };
     }
 }
