@@ -1,8 +1,9 @@
 import argon2 from "argon2";
-import { MyContext } from "src/types";
-import { generateJwtToken } from "src/utils/auth";
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from "type-graphql";
 import { User } from "../entities/User";
+import { MyContext } from "../types";
+import { generateJwtToken } from "../utils/auth";
+import { EntityManager } from "@mikro-orm/postgresql";
 
 @InputType()
 class UsernamePasswordInput {
@@ -62,11 +63,17 @@ export class UserResolver {
             };
         }
         const hashedPassword = await argon2.hash(password);
-        const user = em.create(User, { username, password: hashedPassword });
+        let user;
         try {
-            await em.persistAndFlush(user);
+            const result = await (em as EntityManager).createQueryBuilder(User).getKnexQuery().insert({
+                username,
+                password: hashedPassword,
+                created_at: new Date(),
+                updated_at: new Date()
+            }).returning("*");
+            user = result[0];
         } catch (err) {
-            if (err.code === "23505") {
+            if (err.detail.includes("already exists")) {
                 // username already exists.
                 return {
                     errors: [
@@ -96,7 +103,11 @@ export class UserResolver {
                 errors: [
                     {
                         field: "username",
-                        message: "This username does not exist."
+                        message: "You have entered an invalid username or password."
+                    },
+                    {
+                        field: "password",
+                        message: "You have entered an invalid username or password."
                     }
                 ]
             }
@@ -105,6 +116,10 @@ export class UserResolver {
         if (!validPassword) {
             return {
                 errors: [
+                    {
+                        field: "username",
+                        message: "You have entered an invalid username or password."
+                    },
                     {
                         field: "password",
                         message: "You have entered an invalid username or password."
