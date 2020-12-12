@@ -1,13 +1,14 @@
 require('dotenv').config();
-import express from "express";
-import { ApolloServer } from "apollo-server-express";
-import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
-
-import mikroConfig from "./mikro-orm.config";
+import { ApolloServer } from "apollo-server-express";
+import express from "express";
+import "reflect-metadata";
 import { buildSchema } from "type-graphql";
+import mikroConfig from "./mikro-orm.config";
 import { HelloResolver } from "./resolvers/hello";
 import { PostsResolver } from "./resolvers/posts";
+import { UserResolver } from "./resolvers/users";
+
 
 const main = async () => {
     const port = process.env.PORT || 3005;
@@ -20,7 +21,7 @@ const main = async () => {
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
             validate: false,
-            resolvers: [HelloResolver, PostsResolver],
+            resolvers: [HelloResolver, PostsResolver, UserResolver],
         }),
         context: () => ({ em: orm.em })
     });
@@ -36,3 +37,4 @@ const main = async () => {
 main();
 
 export { };
+

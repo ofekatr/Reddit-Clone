@@ -7,7 +7,8 @@
     "dev": "ts-node-dev --respawn src/index",
     "buid_watch": "tsc -w",
     "build": "tsc",
-    "start": "node dist/index"
+    "start": "node dist/index",
+    "create:migration": "mikro-orm migration:create"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +32,7 @@
     "@mikro-orm/migrations": "^4.2.3",
     "@mikro-orm/postgresql": "^4.2.3",
     "apollo-server-express": "^2.19.0",
+    "argon2": "^0.27.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.4.0",
