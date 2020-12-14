@@ -104,6 +104,7 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login: (
     { __typename?: 'UserResponse' }
+    & Pick<UserResponse, 'token'>
     & { user?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
@@ -124,6 +125,7 @@ export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & { register: (
     { __typename?: 'UserResponse' }
+    & Pick<UserResponse, 'token'>
     & { user?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
@@ -142,6 +144,7 @@ export const LoginDocument = gql`
       id
       username
     }
+    token
     errors {
       field
       message
@@ -160,6 +163,7 @@ export const RegisterDocument = gql`
       id
       username
     }
+    token
     errors {
       field
       message

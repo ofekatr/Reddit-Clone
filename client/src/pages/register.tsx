@@ -1,9 +1,10 @@
 import { Box, Button } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
-import React from "react";
+import React, { useContext } from "react";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
+import { AuthContext } from "../context/auth";
 import { useRegisterMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 
@@ -11,6 +12,7 @@ interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
   const router = useRouter();
+  const authContext = useContext(AuthContext);
   const [, register] = useRegisterMutation();
   return (
     <Wrapper variant="small">
@@ -21,6 +23,8 @@ const Register: React.FC<registerProps> = ({}) => {
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data.register.errors));
           } else if (response.data?.register.user) {
+            const { user, token } = response.data?.register;
+            authContext.login({ ...user, token });
             router.push("/");
           }
         }}
